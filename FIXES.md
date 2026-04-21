@@ -170,25 +170,12 @@ running = True
 ---
 
 **Line 6**
-**Problem:** Used bitwise OR (`|`) instead of logical OR (`||`) when setting API URL.
-
-**Fix:** Replaced with:
-
-```javascript
-const API_URL = process.env.API_URL || "http://localhost:8000";
-```
-
-**Impact:** Prevents incorrect URL resolution and runtime failure.
-
----
-
-**Line 6**
 **Problem:** Default API URL pointed to `localhost`, which fails in Docker since services communicate via service names.
 
 **Fix:** Updated default to:
 
 ```javascript
-"http://localhost:8000"
+"http://api:8000"
 ```
 
 **Impact:** Enables frontend to communicate with API container.
