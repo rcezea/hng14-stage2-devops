@@ -2,7 +2,7 @@ FROM node:24-alpine
 
 WORKDIR /opt/frontend
 
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl=8.17.0
 
 COPY package.json .
 RUN npm install
