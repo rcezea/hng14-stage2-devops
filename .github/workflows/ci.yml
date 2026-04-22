@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
         # ----------------  API - PYTHON LINT TEST  ---------------- #
 
@@ -27,9 +27,9 @@ jobs:
 
         # ----------------  FRONTEND ES LINT TEST ---------------- #
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
+          node-version: '24'
 
       - name: Install eslint with other packages
         run: |
