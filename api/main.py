@@ -18,6 +18,7 @@ retry = Retry(
     supported_errors=(TimeoutError, ConnectionError)
 )
 
+
 def get_redis():
     try:
         client = redis.Redis(

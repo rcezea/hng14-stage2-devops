@@ -16,6 +16,7 @@ retry = Retry(
     supported_errors=(TimeoutError, ConnectionError)
 )
 
+
 def get_redis():
     while True:
         try:
@@ -36,10 +37,12 @@ r = get_redis()
 
 running = True
 
+
 def shutdown_handler(signum, frame):
     global running
     print("Shutting down worker...")
     running = False
+
 
 signal.signal(signal.SIGINT, shutdown_handler)
 signal.signal(signal.SIGTERM, shutdown_handler)
