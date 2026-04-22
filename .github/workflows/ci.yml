@@ -38,7 +38,7 @@ jobs:
       - name: Install eslint with other packages
         run: |
           cd frontend
-          npm ci
+          npm install
 
       - name: Run eslint
         run: |
