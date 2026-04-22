@@ -1,0 +1,53 @@
+name: CI Pipeline
+
+on:
+  push:
+# pull request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+        # ----------------  API - PYTHON LINT TEST  ---------------- #
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Run flake8 on project
+        run: flake8 --exclude=__pycache__,node_modules .
+        # run: flake8 --exclude=.git,__pycache__,.venv,.env,.mypy_cache,.pytest_cache,node_modules .
+
+        # ----------------  FRONTEND ES LINT TEST ---------------- #
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install eslint with other packages
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run eslint
+        run: |
+          cd frontend
+          npm run lint # configured in package.json
+
+      # ---------------- DOCKERFILE LINT TEST ---------------- #
+
+      - name: Install Hadolint
+        run: |
+          wget -O hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x hadolint
+
+      - name: Run Hadolint
+        run: ./hadolint api/Dockerfile worker/Dockerfile frontend/Dockerfile
+        # run: ./hadolint --ignore DL3018 --ignore DL3015 --ignore DL3008 api/Dockerfile worker/Dockerfile frontend/Dockerfile
