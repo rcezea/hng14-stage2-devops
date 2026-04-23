@@ -22,3 +22,4 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # version pinning makes code reproducible
 # --no-install-recommends avoids installing unnecessary packages
+# apt-cache policy curl to check installed version
