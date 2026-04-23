@@ -141,3 +141,72 @@ jobs:
         run: |
          docker push localhost:5000/frontend:latest
          docker push localhost:5000/frontend:${GIT_SHA}
+  scan:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set SHA
+        run: echo "GIT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Wait for registry
+        run: |
+          for i in {1..10}; do
+          curl -s http://localhost:5000/v2/ && break
+          sleep 2
+          done
+
+      - name: Pull images
+        run: |
+          docker pull localhost:5000/api:${GIT_SHA}
+          docker pull localhost:5000/frontend:${GIT_SHA}
+          docker pull localhost:5000/worker:${GIT_SHA}
+
+      # ---------------- API ----------------
+      - name: Scan API image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: localhost:5000/api:${GIT_SHA}
+          format: 'sarif'
+          output: 'api-trivy-results.sarif'
+          exit-code: '1'
+          severity: 'CRITICAL'
+
+      - name: Upload API scan results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: api-trivy-results.sarif
+
+      # ---------------- FRONTEND ----------------
+      - name: Scan FRONTEND image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: localhost:5000/frontend:${GIT_SHA}
+          format: 'sarif'
+          output: 'frontend-trivy-results.sarif'
+          exit-code: '1'
+          severity: 'CRITICAL'
+
+      - name: Upload Frontend scan results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: frontend-trivy-results.sarif
+
+      # ---------------- WORKER ----------------
+      - name: Scan WORKER image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: localhost:5000/worker:${GIT_SHA}
+          format: 'sarif'
+          output: 'worker-trivy-results.sarif'
+          exit-code: '1'
+          severity: 'CRITICAL'
+
+      - name: Upload Worker scan results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: worker-trivy-results.sarif
