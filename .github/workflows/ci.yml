@@ -84,6 +84,9 @@ jobs:
   build:
 #    needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read          # Required to checkout and read repo files
+      security-events: write  # Required to upload SARIF results to the GitHub Security tab
     services:
       registry:
         image: registry:2
