@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-# pull_request:
 
 jobs:
   lint:
@@ -148,11 +147,6 @@ jobs:
     permissions:
       contents: read          # Required to checkout and read repo files
       security-events: write  # Required to upload SARIF results to the GitHub Security tab
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - '5000:5000'
 
     steps:
       - name: Checkout code
@@ -233,30 +227,36 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: api:${{ env.GIT_SHA }}
-          format: 'sarif'
-          output: 'api-trivy-results.sarif'
+          format: sarif
+          output: api-trivy-results.sarif
           exit-code: '0'
-          severity: 'CRITICAL'
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          scanners: vuln
 
       # ---------------- FRONTEND ----------------
       - name: Scan FRONTEND image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: frontend:${{ env.GIT_SHA }}
-          format: 'sarif'
-          output: 'frontend-trivy-results.sarif'
+          format: sarif
+          output: frontend-trivy-results.sarif
           exit-code: '0'
-          severity: 'CRITICAL'
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          scanners: vuln
 
       # ---------------- WORKER ----------------
       - name: Scan WORKER image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: worker:${{ env.GIT_SHA }}
-          format: 'sarif'
-          output: 'worker-trivy-results.sarif'
+          format: sarif
+          output: worker-trivy-results.sarif
           exit-code: '0'
-          severity: 'CRITICAL'
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          scanners: vuln
 
 
       # ---------------- UPLOAD SCAN RESULTS ----------------
