@@ -229,7 +229,7 @@ jobs:
       - name: Scan API image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: api:${GIT_SHA}
+          image-ref: api:${{ env.GIT_SHA }}
           format: 'sarif'
           output: 'api-trivy-results.sarif'
           exit-code: '1'
@@ -239,7 +239,7 @@ jobs:
       - name: Scan FRONTEND image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: localhost:5000/frontend:${GIT_SHA}
+          image-ref: frontend:${{ env.GIT_SHA }}
           format: 'sarif'
           output: 'frontend-trivy-results.sarif'
           exit-code: '1'
@@ -249,7 +249,7 @@ jobs:
       - name: Scan WORKER image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: localhost:5000/worker:${GIT_SHA}
+          image-ref: worker:${{ env.GIT_SHA }}
           format: 'sarif'
           output: 'worker-trivy-results.sarif'
           exit-code: '1'
