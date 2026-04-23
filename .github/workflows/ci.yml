@@ -81,3 +81,62 @@ jobs:
         with:
           name: coverage-report
           path: coverage.xml
+  build:
+    runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - '5000:5000'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set SHA
+        run: echo "GIT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          
+          
+      # ---------------- API ----------------
+      - name: Build API image
+        run: |
+          docker build -t api ./api
+
+      - name: Tag API image
+        run: |
+         docker tag api localhost:5000/api:latest
+         docker tag api localhost:5000/api:${GIT_SHA}
+
+      - name: Push API image
+        run: |
+         docker push localhost:5000/api:latest
+         docker push localhost:5000/api:${GIT_SHA}
+
+      # ---------------- WORKER ----------------
+      - name: Build Worker image
+        run: |
+         docker build -t worker ./worker
+
+      - name: Tag Worker image
+        run: |
+         docker tag worker localhost:5000/worker:latest
+         docker tag worker localhost:5000/worker:${GIT_SHA}
+
+      - name: Push Worker image
+        run: |
+         docker push localhost:5000/worker:latest
+         docker push localhost:5000/worker:${GIT_SHA}
+
+      # ---------------- FRONTEND ----------------
+      - name: Build Frontend image
+        run: |
+         docker build -t frontend ./frontend
+
+      - name: Tag Frontend image
+        run: |
+         docker tag frontend localhost:5000/frontend:latest
+         docker tag frontend localhost:5000/frontend:${GIT_SHA}
+
+      - name: Push Frontend image
+        run: |
+         docker push localhost:5000/frontend:latest
+         docker push localhost:5000/frontend:${GIT_SHA}
