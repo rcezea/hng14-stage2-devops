@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /opt/api
 
-RUN apt-get update && apt-get install --no-install-recommends -y curl=8.17.0 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install --no-install-recommends -y curl=8.14.1-2+deb13u2 && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 
