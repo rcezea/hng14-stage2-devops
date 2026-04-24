@@ -291,7 +291,7 @@ jobs:
           docker compose up -d --build
       
       - name: Submit job and Poll until completion
-        run: python integration_test.py
+        run: python integration.py
           
       - name: Graceful Teardown
         if: always()
