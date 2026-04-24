@@ -109,15 +109,15 @@ jobs:
       - name: Tag API image
         run: |
           docker tag api localhost:5000/api:latest
-          docker tag api localhost:5000/api:${{ GIT_SHA }}
-          docker tag api ghcr.io/${{ github.repository }}/api:${{ GIT_SHA }}
+          docker tag api localhost:5000/api:${{ env.GIT_SHA }}
+          docker tag api ghcr.io/${{ github.repository }}/api:${{ env.GIT_SHA }}
           docker tag api ghcr.io/${{ github.repository }}/api:latest
 
       - name: Push API image
         run: |
           docker push localhost:5000/api:latest
-          docker push localhost:5000/api:${{ GIT_SHA }}
-          docker push ghcr.io/${{ github.repository }}/api:${{ GIT_SHA }}
+          docker push localhost:5000/api:${{ env.GIT_SHA }}
+          docker push ghcr.io/${{ github.repository }}/api:${{ env.GIT_SHA }}
           docker push ghcr.io/${{ github.repository }}/api:latest
       
 
@@ -129,15 +129,15 @@ jobs:
       - name: Tag Worker image
         run: |
           docker tag worker localhost:5000/worker:latest
-          docker tag worker localhost:5000/worker:${{ GIT_SHA }}
-          docker tag worker ghcr.io/${{ github.repository }}/worker:${{ GIT_SHA }}
+          docker tag worker localhost:5000/worker:${{ env.GIT_SHA }}
+          docker tag worker ghcr.io/${{ github.repository }}/worker:${{ env.GIT_SHA }}
           docker tag worker ghcr.io/${{ github.repository }}/worker:latest
 
       - name: Push Worker image
         run: |
           docker push localhost:5000/worker:latest
-          docker push localhost:5000/worker:${{ GIT_SHA }}
-          docker push ghcr.io/${{ github.repository }}/worker:${{ GIT_SHA }}
+          docker push localhost:5000/worker:${{ env.GIT_SHA }}
+          docker push ghcr.io/${{ github.repository }}/worker:${{ env.GIT_SHA }}
           docker push ghcr.io/${{ github.repository }}/worker:latest
       
 
