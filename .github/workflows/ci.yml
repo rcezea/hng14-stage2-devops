@@ -81,7 +81,7 @@ jobs:
           name: coverage-report
           path: coverage.xml
   build:
-#    needs: test
+    needs: test
     runs-on: ubuntu-latest
     services:
       registry:
