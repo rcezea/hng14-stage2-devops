@@ -279,16 +279,19 @@ jobs:
         with:
           sarif_file: worker-trivy-results.sarif
           category: worker
-  integation:
+  integration:
     needs: scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        run: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
 
       - name: Build System
         run: |
           docker compose up -d --build
+      
+      - name: Wait for Services
+        run: sleep 15
       
       - name: Submit job and Poll until completion
         run: python integration.py
