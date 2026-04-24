@@ -142,7 +142,6 @@ jobs:
          docker push localhost:5000/frontend:${GIT_SHA}
   scan:
     needs: build
-
     runs-on: ubuntu-latest
     permissions:
       contents: read          # Required to checkout and read repo files
@@ -280,3 +279,20 @@ jobs:
         with:
           sarif_file: worker-trivy-results.sarif
           category: worker
+  integation:
+    needs: scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        run: actions/checkout@v6
+
+      - name: Build System
+        run: |
+          docker compose up -d --build
+      
+      - name: Submit job and Poll until completion
+        run: python integration_test.py
+          
+      - name: Graceful Teardown
+        if: always()
+        run: docker compose down
