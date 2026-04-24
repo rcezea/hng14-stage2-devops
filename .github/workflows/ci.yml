@@ -58,7 +58,9 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -178,17 +180,6 @@ jobs:
 
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-#      - name: Pull images
-#        run: |
-#          docker pull ghcr.io/${{ github.repository }}/api:${{ env.GIT_SHA }}
-#          docker pull ghcr.io/${{ github.repository }}/worker:${{ env.GIT_SHA }}
-#          docker pull ghcr.io/${{ github.repository }}/frontend:${{ env.GIT_SHA }}
-
-    # No need to pull images
-    # Trivy csn scan remote images
-
-
 
       # ---------------- API ----------------
       - name: Scan API image
