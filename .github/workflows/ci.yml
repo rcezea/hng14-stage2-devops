@@ -141,7 +141,7 @@ jobs:
          docker push localhost:5000/frontend:latest
          docker push localhost:5000/frontend:${GIT_SHA}
   scan:
-#    needs: build
+    needs: build
 
     runs-on: ubuntu-latest
     permissions:
