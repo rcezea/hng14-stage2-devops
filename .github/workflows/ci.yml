@@ -257,7 +257,7 @@ jobs:
         if: always()
         run: docker compose down
   deploy:
-    needs: integration
+#    needs: integration
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -283,6 +283,7 @@ jobs:
       # Get compose network
       - name: Get network name
         run: |
+          docker ps
           NET=$(docker network ls --format '{{.Name}}' | grep worker-api-network | head -n 1)
           echo "NETWORK=$NET" >> $GITHUB_ENV
 
