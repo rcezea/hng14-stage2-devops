@@ -149,15 +149,15 @@ jobs:
       - name: Tag Frontend image
         run: |
           docker tag frontend localhost:5000/frontend:latest
-          docker tag frontend localhost:5000/frontend:${GIT_SHA}
-          docker tag frontend ghcr.io/${{ github.repository }}/frontend:${{ GIT_SHA }}
+          docker tag frontend localhost:5000/frontend:${{ env.GIT_SHA }}
+          docker tag frontend ghcr.io/${{ github.repository }}/frontend:${{ env.GIT_SHA }}
           docker tag frontend ghcr.io/${{ github.repository }}/frontend:latest
 
       - name: Push Frontend image
         run: |
           docker push localhost:5000/frontend:latest
           docker push localhost:5000/frontend:${GIT_SHA}
-          docker push ghcr.io/${{ github.repository }}/frontend:${{ GIT_SHA }}
+          docker push ghcr.io/${{ github.repository }}/frontend:${{ env.GIT_SHA }}
           docker push ghcr.io/${{ github.repository }}/frontend:latest
 
 
