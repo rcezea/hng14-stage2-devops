@@ -246,6 +246,15 @@ jobs:
           ignore-unfixed: true
           scanners: vuln
 
+      - name: Enforce security gate
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: worker:${{ env.GIT_SHA }}
+          format: table
+          exit-code: '1'
+          severity: CRITICAL
+          ignore-unfixed: true
+
       # ---------------- FRONTEND ----------------
       - name: Scan FRONTEND image
         uses: aquasecurity/trivy-action@v0.36.0
@@ -253,10 +262,19 @@ jobs:
           image-ref: frontend:${{ env.GIT_SHA }}
           format: sarif
           output: frontend-trivy-results.sarif
-          exit-code: '1'
+          exit-code: '0'
           severity: CRITICAL
           ignore-unfixed: true
           scanners: vuln
+
+      - name: Enforce security gate
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: frontend:${{ env.GIT_SHA }}
+          format: table
+          exit-code: '1'
+          severity: CRITICAL
+          ignore-unfixed: true
 
 
 
