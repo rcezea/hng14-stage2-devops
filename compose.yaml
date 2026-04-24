@@ -19,7 +19,8 @@ services:
           memory: "256MB"
 
   api:
-    build: ./api
+    image: ghcr.io/${GITHUB_REPOSITORY}/api:${GIT_SHA}
+    pull_policy: missing
     networks:
       - worker-api-network
     depends_on:
@@ -41,7 +42,8 @@ services:
 
 
   worker:
-    build: ./worker
+    image: ghcr.io/${GITHUB_REPOSITORY}/worker:${GIT_SHA}
+    pull_policy: missing
     depends_on:
       redis:
         condition: service_healthy
@@ -63,7 +65,8 @@ services:
 
 
   frontend:
-    build: ./frontend
+    image: ghcr.io/${GITHUB_REPOSITORY}/frontend:${GIT_SHA}
+    pull_policy: missing
     ports:
       - '3000:3000'
     environment:
