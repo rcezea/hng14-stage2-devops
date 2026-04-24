@@ -229,7 +229,7 @@ jobs:
           image-ref: api:${{ env.GIT_SHA }}
           format: sarif
           output: api-trivy-results.sarif
-          exit-code: '0'
+          exit-code: '1'
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           scanners: vuln
@@ -241,7 +241,7 @@ jobs:
           image-ref: frontend:${{ env.GIT_SHA }}
           format: sarif
           output: frontend-trivy-results.sarif
-          exit-code: '0'
+          exit-code: '1'
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           scanners: vuln
@@ -253,7 +253,7 @@ jobs:
           image-ref: worker:${{ env.GIT_SHA }}
           format: sarif
           output: worker-trivy-results.sarif
-          exit-code: '0'
+          exit-code: '1'
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           scanners: vuln
