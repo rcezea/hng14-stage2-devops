@@ -1,0 +1,11 @@
+node_modules
+.git
+__pycache__
+tests
+.env
+.DS_Store
+.coverage
+.env.example
+.pytest_cache
+*.md
+*.
