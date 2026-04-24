@@ -257,7 +257,7 @@ jobs:
         if: always()
         run: docker compose down
   deploy:
-    needs: build
+    needs: integration
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -283,7 +283,6 @@ jobs:
       # Get compose network
       - name: Get network name
         run: |
-          docker ps
           NET=$(docker network ls --format '{{.Name}}' | grep worker-api-network | head -n 1)
           echo "NETWORK=$NET" >> $GITHUB_ENV
 
@@ -312,14 +311,13 @@ jobs:
 
       - name: Promote API
         run: |
-          docker rm -f api || true
+          docker rm -f $(docker compose ps -q api) || true
           docker run -d \
             --name api \
             --network $NETWORK \
             -e REDIS_HOST=redis \
             -p 8000:8000 \
             ghcr.io/${{ github.repository }}/api:${{ env.GIT_SHA }}
-          docker rm -f api_new || true
 
       # ================= WORKER =================
       - name: Start new Worker
@@ -341,7 +339,7 @@ jobs:
 
       - name: Promote Worker
         run: |
-          docker rm -f worker || true
+          docker rm -f $(docker compose ps -q worker) || true
           docker rename worker_new worker
 
       # ================= FRONTEND =================
@@ -367,13 +365,12 @@ jobs:
 
       - name: Promote Frontend
         run: |
-          docker rm -f frontend || true
+          docker rm -f $(docker compose ps -q frontend) || true
           docker run -d \
             --name frontend \
             --network $NETWORK \
             -p 3000:3000 \
             ghcr.io/${{ github.repository }}/frontend:${{ env.GIT_SHA }}
-          docker rm -f frontend_new || true
 
       # ================= CLEANUP =================
       - name: Cleanup
