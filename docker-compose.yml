@@ -1,0 +1,95 @@
+services:
+  redis:
+    image: 'redis:latest'
+    networks:
+      - worker-api-network
+    volumes:
+      - redis-data:/redis/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      retries: 3
+      timeout: 30s
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: "256MB"
+
+  api:
+    image: ghcr.io/${GITHUB_REPOSITORY}/api:${GIT_SHA}
+    pull_policy: missing
+    networks:
+      - worker-api-network
+    depends_on:
+      redis:
+          condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://api:8000/api/health')\""]
+      interval: 30s
+      retries: 3
+      timeout: 30s
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: "256MB"
+
+
+  worker:
+    image: ghcr.io/${GITHUB_REPOSITORY}/worker:${GIT_SHA}
+    pull_policy: missing
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+    networks:
+      - worker-api-network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import os, redis; r=redis.Redis(host=os.getenv('REDIS_HOST','redis'), port=6379); exit(0 if r.ping() else 1)\""]
+      interval: 30s
+      retries: 3
+      timeout: 30s
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: "256MB"
+
+
+  frontend:
+    image: ghcr.io/${GITHUB_REPOSITORY}/frontend:${GIT_SHA}
+    pull_policy: missing
+    ports:
+      - '3000:3000'
+    environment:
+      - API_URL=http://api:8000
+    networks:
+      - worker-api-network
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:3000/api/health"]
+      interval: 30s
+      retries: 3
+      timeout: 30s
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: "256MB"
+
+volumes:
+  redis-data:
+networks:
+  worker-api-network:
+    driver: bridge
