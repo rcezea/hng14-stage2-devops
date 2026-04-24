@@ -229,22 +229,10 @@ jobs:
           image-ref: api:${{ env.GIT_SHA }}
           format: sarif
           output: api-trivy-results.sarif
-          exit-code: '0'
+          exit-code: '1'
           severity: CRITICAL
           ignore-unfixed: true
-#          scanners: vuln
-
-      # ---------------- FRONTEND ----------------
-      - name: Scan FRONTEND image
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: frontend:${{ env.GIT_SHA }}
-          format: sarif
-          output: frontend-trivy-results.sarif
-          exit-code: '0'
-          severity: CRITICAL
-          ignore-unfixed: true
-#          scanners: vuln
+          scanners: vuln
 
       # ---------------- WORKER ----------------
       - name: Scan WORKER image
@@ -253,10 +241,24 @@ jobs:
           image-ref: worker:${{ env.GIT_SHA }}
           format: sarif
           output: worker-trivy-results.sarif
-          exit-code: '0'
+          exit-code: '1'
           severity: CRITICAL
           ignore-unfixed: true
-#          scanners: vuln
+          scanners: vuln
+
+      # ---------------- FRONTEND ----------------
+      - name: Scan FRONTEND image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: frontend:${{ env.GIT_SHA }}
+          format: sarif
+          output: frontend-trivy-results.sarif
+          exit-code: '1'
+          severity: CRITICAL
+          ignore-unfixed: true
+          scanners: vuln
+
+
 
 
       # ---------------- UPLOAD SCAN RESULTS ----------------
